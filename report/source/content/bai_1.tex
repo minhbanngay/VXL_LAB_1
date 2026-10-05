@@ -778,6 +778,19 @@ bằng phép chia cho 5. Trước mỗi lần hiển thị, toàn bộ LED đư�
 giờ, phút và giây được bật. Khi hai hoặc ba kim trùng vị trí, cùng một LED biểu
 diễn các kim đó nên số LED sáng thực tế có thể nhỏ hơn ba.
 
+\begin{figure}[!htp]
+    \centering
+    \IfFileExists{source/picture/bai_1/ex10_proteus.png}{
+        \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex10_proteus.png}
+    }{
+        \fbox{\parbox[c][4.5cm][c]{0.82\textwidth}{\centering
+        Chèn ảnh \texttt{ex10\_proteus.png} tại đây}}
+    }
+    \caption{Sơ đồ mô phỏng đồng hồ 12 LED của Exercise 10 trên Proteus}
+    \label{fig:ex10-proteus}
+\end{figure}
+
+
 \begin{lstlisting}[caption=Hiển thị ba kim trên 12 LED]
 static void displayClock(int hour, int minute, int second)
 {
