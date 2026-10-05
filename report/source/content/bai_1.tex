@@ -327,6 +327,42 @@ while (1){
 }
 \end{lstlisting}
 
+\subsubsection*{Bài làm Exercise 1}
+
+Hai LED được mắc active-low: cathode của LED đỏ nối PA5, cathode của LED vàng nối
+PA6; anode của mỗi LED nối nguồn 3.3 V qua điện trở hạn dòng. Vì vậy mức
+\texttt{GPIO\_PIN\_RESET} bật LED và mức \texttt{GPIO\_PIN\_SET} tắt LED.
+
+\IfFileExists{source/picture/bai_1/ex01_proteus.png}{
+\begin{figure}[!htp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex01_proteus.png}
+    \caption{\href{https://github.com/minhbanngay/VXL_LAB_1/tree/exercise/01/proteus}
+    {Sơ đồ mô phỏng Proteus của Exercise 1}}
+    \label{fig:ex01-proteus}
+\end{figure}
+}{
+\textit{Chưa có ảnh Proteus. Sau khi hoàn thiện mạch, lưu ảnh với tên
+\texttt{source/picture/bai\_1/ex01\_proteus.png}; ảnh sẽ tự xuất hiện ở đây.}
+}
+
+\begin{lstlisting}[caption=Điều khiển hai LED đổi trạng thái sau mỗi 2 giây]
+while (1)
+{
+  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin,
+                    GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin,
+                    GPIO_PIN_SET);
+  HAL_Delay(2000);
+
+  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin,
+                    GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin,
+                    GPIO_PIN_RESET);
+  HAL_Delay(2000);
+}
+\end{lstlisting}
+
 \subsection{Exercise 2}
 Extend the first exercise to simulate the behavior of a traffic light. A third LED, named \textbf{LED-GREEN} is added to the system, which is connected to \textbf{PA7}. A cycle in this traffic light is 5 seconds for the RED, 2 seconds for the YELLOW and 3 seconds for the GREEN. The LED-GREEN is also controlled by its negative pin.\\
 
