@@ -751,5 +751,21 @@ void setNumberOnClock(int num)
 \subsection{Exercise 9}
 Implement a function named \textbf{clearNumberOnClock(int num)}. The input for this function is from \textbf{0 to 11} and an appropriate LED is turn off. 
 
+\subsubsection*{Bài làm Exercise 9}
+
+Hàm sử dụng cùng ánh xạ vị trí của Exercise 8. Với kết nối active-low, ghi mức
+\texttt{GPIO\_PIN\_SET} lên chân tương ứng sẽ tắt LED. Giá trị ngoài 0--11 được
+bỏ qua.
+
+\begin{lstlisting}[caption=Hàm tắt một LED tại vị trí được chỉ định]
+void clearNumberOnClock(int num)
+{
+  if ((num >= 0) && (num < 12))
+  {
+    HAL_GPIO_WritePin(GPIOA, clock_led_pins[num], GPIO_PIN_SET);
+  }
+}
+\end{lstlisting}
+
 \subsection{Exercise 10}
 Integrate the whole system and use 12 LEDs to display a clock. At a given time, there are only 3 LEDs are turn on for hour, minute and second information.
