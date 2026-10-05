@@ -618,6 +618,45 @@ Integrate the 7SEG-LED to the 4 way traffic light. In this case, the 7SEG-LED is
 
 In this exercise, only source code is required to present. The function display7SEG in previous exercise can be re-used.
 
+\subsubsection*{Bài làm Exercise 5}
+
+Hàm \texttt{display7SEG()} của Exercise 4 được tái sử dụng. Mỗi pha đặt trạng
+thái cho 12 LED giao thông, sau đó LED 7 đoạn hiển thị số giây còn lại. Pha xanh
+kéo dài 3 giây và pha vàng kéo dài 2 giây; vì hai hướng hoạt động đối nghịch nên
+mỗi hướng có tổng thời gian đèn đỏ là 5 giây.
+
+\begin{lstlisting}[caption=Điều khiển một pha và hiển thị thời gian đếm ngược]
+static void TrafficLight_RunPhase(uint16_t active_pins,
+                                  int duration_seconds)
+{
+  HAL_GPIO_WritePin(GPIOA, ALL_TRAFFIC_LED_PINS, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, active_pins, GPIO_PIN_RESET);
+
+  for (int remaining = duration_seconds; remaining > 0; --remaining)
+  {
+    display7SEG(remaining);
+    HAL_Delay(1000);
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Chu kỳ đèn giao thông bốn hướng có đếm ngược]
+while (1)
+{
+  TrafficLight_RunPhase(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
+                        EAST_RED_Pin | WEST_RED_Pin, 3);
+
+  TrafficLight_RunPhase(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
+                        EAST_RED_Pin | WEST_RED_Pin, 2);
+
+  TrafficLight_RunPhase(NORTH_RED_Pin | SOUTH_RED_Pin |
+                        EAST_GREEN_Pin | WEST_GREEN_Pin, 3);
+
+  TrafficLight_RunPhase(NORTH_RED_Pin | SOUTH_RED_Pin |
+                        EAST_YELLOW_Pin | WEST_YELLOW_Pin, 2);
+}
+\end{lstlisting}
+
 \subsection{Exercise 6}
 In this exercise, a new Proteus schematic is designed to simulate an analog clock, with 12 different number. The connections for 12 LEDs are supposed from PA4 to PA15 of the STM32. The arrangement of 12 LEDs is depicted as follows.
 
