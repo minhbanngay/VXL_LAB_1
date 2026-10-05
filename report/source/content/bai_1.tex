@@ -534,6 +534,85 @@ while (1){
 
 \textbf{Report 2: } Present the source code for display7SEG function.
 
+\subsubsection*{Bài làm Exercise 4}
+
+LED 7 đoạn common-anode được nối theo thứ tự: đoạn a đến PB0, b đến PB1,
+c đến PB2, d đến PB3, e đến PB4, f đến PB5 và g đến PB6. Chân common-anode
+nối nguồn 3.3 V. Các đoạn sáng ở mức logic 0 và tắt ở mức logic 1.
+
+\begin{figure}[!htp]
+    \centering
+    \IfFileExists{source/picture/bai_1/ex04_1_proteus.png}{
+        \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex04_1_proteus.png}
+    }{
+        \fbox{\parbox[c][4.5cm][c]{0.82\textwidth}{\centering
+        Chèn ảnh \texttt{ex04\_1\_proteus.png} tại đây}}
+    }
+    \caption{Mô phỏng Exercise 4: LED 7 đoạn hiển thị số 0}
+    \label{fig:ex04-state-1}
+\end{figure}
+
+\begin{figure}[!htp]
+    \centering
+    \IfFileExists{source/picture/bai_1/ex04_2_proteus.png}{
+        \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex04_2_proteus.png}
+    }{
+        \fbox{\parbox[c][4.5cm][c]{0.82\textwidth}{\centering
+        Chèn ảnh \texttt{ex04\_2\_proteus.png} tại đây}}
+    }
+    \caption{Mô phỏng Exercise 4: LED 7 đoạn hiển thị số 5}
+    \label{fig:ex04-state-2}
+\end{figure}
+
+\begin{figure}[!htp]
+    \centering
+    \IfFileExists{source/picture/bai_1/ex04_3_proteus.png}{
+        \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex04_3_proteus.png}
+    }{
+        \fbox{\parbox[c][4.5cm][c]{0.82\textwidth}{\centering
+        Chèn ảnh \texttt{ex04\_3\_proteus.png} tại đây}}
+    }
+    \caption{Mô phỏng Exercise 4: LED 7 đoạn hiển thị số 9}
+    \label{fig:ex04-state-3}
+\end{figure}
+
+\begin{lstlisting}[caption=Hàm hiển thị chữ số trên LED 7 đoạn common-anode]
+void display7SEG(int num)
+{
+  static const uint16_t digit_segments[10] = {
+    SEG_A_Pin | SEG_B_Pin | SEG_C_Pin | SEG_D_Pin |
+      SEG_E_Pin | SEG_F_Pin,
+    SEG_B_Pin | SEG_C_Pin,
+    SEG_A_Pin | SEG_B_Pin | SEG_D_Pin | SEG_E_Pin | SEG_G_Pin,
+    SEG_A_Pin | SEG_B_Pin | SEG_C_Pin | SEG_D_Pin | SEG_G_Pin,
+    SEG_B_Pin | SEG_C_Pin | SEG_F_Pin | SEG_G_Pin,
+    SEG_A_Pin | SEG_C_Pin | SEG_D_Pin | SEG_F_Pin | SEG_G_Pin,
+    SEG_A_Pin | SEG_C_Pin | SEG_D_Pin | SEG_E_Pin |
+      SEG_F_Pin | SEG_G_Pin,
+    SEG_A_Pin | SEG_B_Pin | SEG_C_Pin,
+    ALL_SEGMENT_PINS,
+    SEG_A_Pin | SEG_B_Pin | SEG_C_Pin | SEG_D_Pin |
+      SEG_F_Pin | SEG_G_Pin
+  };
+
+  HAL_GPIO_WritePin(GPIOB, ALL_SEGMENT_PINS, GPIO_PIN_SET);
+  if ((num >= 0) && (num <= 9))
+  {
+    HAL_GPIO_WritePin(GPIOB, digit_segments[num], GPIO_PIN_RESET);
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Kiểm tra các chữ số từ 0 đến 9]
+int counter = 0;
+while (1)
+{
+  display7SEG(counter);
+  counter = (counter + 1) % 10;
+  HAL_Delay(1000);
+}
+\end{lstlisting}
+
 \subsection{Exercise 5}
 Integrate the 7SEG-LED to the 4 way traffic light. In this case, the 7SEG-LED is used to display countdown value.\\
 

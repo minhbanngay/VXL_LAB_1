@@ -39,6 +39,9 @@
                               EAST_GREEN_Pin | WEST_RED_Pin | \
                               WEST_YELLOW_Pin | WEST_GREEN_Pin)
 
+#define ALL_SEGMENT_PINS (SEG_A_Pin | SEG_B_Pin | SEG_C_Pin | SEG_D_Pin | \
+                          SEG_E_Pin | SEG_F_Pin | SEG_G_Pin)
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -57,7 +60,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
-static void TrafficLight_Set(uint16_t active_pins);
+void display7SEG(int num);
 
 /* USER CODE END PFP */
 
@@ -74,6 +77,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+
+  int counter = 0;
 
   /* USER CODE END 1 */
 
@@ -99,6 +104,7 @@ int main(void)
 
   /* All LEDs are active-low, so a high output turns every LED off. */
   HAL_GPIO_WritePin(GPIOA, ALL_TRAFFIC_LED_PINS, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, ALL_SEGMENT_PINS, GPIO_PIN_SET);
 
   /* USER CODE END 2 */
 
@@ -109,25 +115,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    /* North/South green, East/West red. */
-    TrafficLight_Set(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
-                     EAST_RED_Pin | WEST_RED_Pin);
-    HAL_Delay(3000);
-
-    /* North/South yellow, East/West red. */
-    TrafficLight_Set(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
-                     EAST_RED_Pin | WEST_RED_Pin);
-    HAL_Delay(2000);
-
-    /* North/South red, East/West green. */
-    TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
-                     EAST_GREEN_Pin | WEST_GREEN_Pin);
-    HAL_Delay(3000);
-
-    /* North/South red, East/West yellow. */
-    TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
-                     EAST_YELLOW_Pin | WEST_YELLOW_Pin);
-    HAL_Delay(2000);
+    display7SEG(counter);
+    counter = (counter + 1) % 10;
+    HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -182,11 +172,16 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, SOUTH_RED_Pin|SOUTH_YELLOW_Pin|SOUTH_GREEN_Pin|EAST_RED_Pin
                           |EAST_YELLOW_Pin|NORTH_RED_Pin|NORTH_YELLOW_Pin|NORTH_GREEN_Pin
                           |EAST_GREEN_Pin|WEST_RED_Pin|WEST_YELLOW_Pin|WEST_GREEN_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, SEG_A_Pin|SEG_B_Pin|SEG_C_Pin|SEG_D_Pin
+                          |SEG_E_Pin|SEG_F_Pin|SEG_G_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : SOUTH_RED_Pin SOUTH_YELLOW_Pin SOUTH_GREEN_Pin EAST_RED_Pin
                            EAST_YELLOW_Pin NORTH_RED_Pin NORTH_YELLOW_Pin NORTH_GREEN_Pin
@@ -199,6 +194,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : SEG_A_Pin SEG_B_Pin SEG_C_Pin SEG_D_Pin
+                           SEG_E_Pin SEG_F_Pin SEG_G_Pin */
+  GPIO_InitStruct.Pin = SEG_A_Pin|SEG_B_Pin|SEG_C_Pin|SEG_D_Pin
+                          |SEG_E_Pin|SEG_F_Pin|SEG_G_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
   /* USER CODE END MX_GPIO_Init_2 */
@@ -207,13 +211,30 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /**
-  * @brief Turn on only the selected active-low traffic LEDs.
-  * @param active_pins GPIOA pin mask of LEDs that must be on.
+  * @brief Display one digit on the active-low common-anode 7-segment LED.
+  * @param num Digit from 0 to 9. Other values turn all segments off.
   */
-static void TrafficLight_Set(uint16_t active_pins)
+void display7SEG(int num)
 {
-  HAL_GPIO_WritePin(GPIOA, ALL_TRAFFIC_LED_PINS, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOA, active_pins, GPIO_PIN_RESET);
+  static const uint16_t digit_segments[10] = {
+    SEG_A_Pin | SEG_B_Pin | SEG_C_Pin | SEG_D_Pin | SEG_E_Pin | SEG_F_Pin,
+    SEG_B_Pin | SEG_C_Pin,
+    SEG_A_Pin | SEG_B_Pin | SEG_D_Pin | SEG_E_Pin | SEG_G_Pin,
+    SEG_A_Pin | SEG_B_Pin | SEG_C_Pin | SEG_D_Pin | SEG_G_Pin,
+    SEG_B_Pin | SEG_C_Pin | SEG_F_Pin | SEG_G_Pin,
+    SEG_A_Pin | SEG_C_Pin | SEG_D_Pin | SEG_F_Pin | SEG_G_Pin,
+    SEG_A_Pin | SEG_C_Pin | SEG_D_Pin | SEG_E_Pin | SEG_F_Pin | SEG_G_Pin,
+    SEG_A_Pin | SEG_B_Pin | SEG_C_Pin,
+    ALL_SEGMENT_PINS,
+    SEG_A_Pin | SEG_B_Pin | SEG_C_Pin | SEG_D_Pin | SEG_F_Pin | SEG_G_Pin
+  };
+
+  HAL_GPIO_WritePin(GPIOB, ALL_SEGMENT_PINS, GPIO_PIN_SET);
+
+  if ((num >= 0) && (num <= 9))
+  {
+    HAL_GPIO_WritePin(GPIOB, digit_segments[num], GPIO_PIN_RESET);
+  }
 }
 
 /* USER CODE END 4 */
