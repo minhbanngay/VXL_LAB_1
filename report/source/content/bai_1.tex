@@ -382,17 +382,27 @@ Ba LED được mắc active-low: LED đỏ nối PA5, LED vàng nối PA6 và L
 PA7. Ở mỗi trạng thái chỉ có một LED sáng. Chu kỳ hoạt động là đỏ 5 giây,
 vàng 2 giây và xanh 3 giây, sau đó lặp lại.
 
-\IfFileExists{source/picture/bai_1/ex02_proteus.png}{
+
 \begin{figure}[!htp]
     \centering
-    \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex02_proteus.png}
+    \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex02_1_proteus.png}
     \caption{Sơ đồ mô phỏng đèn giao thông của Exercise 2 trên Proteus}
-    \label{fig:ex02-proteus}
+    \label{fig:ex02-1-proteus}
 \end{figure}
-}{
-\textit{Ảnh mô phỏng sẽ xuất hiện tại đây sau khi lưu với tên
-\texttt{source/picture/bai\_1/ex02\_proteus.png}.}
-}
+
+\begin{figure}[!htp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex02_2_proteus.png}
+    \caption{Sơ đồ mô phỏng đèn giao thông của Exercise 2 trên Proteus}
+    \label{fig:ex02-2-proteus}
+\end{figure}
+
+\begin{figure}[!htp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex02_3_proteus.png}
+    \caption{Sơ đồ mô phỏng đèn giao thông của Exercise 2 trên Proteus}
+    \label{fig:ex02-3-proteus}
+\end{figure}
 
 \begin{lstlisting}[caption=Chu kỳ đèn giao thông đỏ 5 s -- vàng 2 s -- xanh 3 s]
 while (1)
@@ -423,6 +433,78 @@ Extend to the 4-way traffic light. Arrange 12 LEDs in a nice shape to simulate t
     \caption{\textit{Reference design for a 4 way traffic light}}
     \label{bai1_pic2}
 \end{figure}
+
+\subsubsection*{Bài làm Exercise 3}
+
+Mười hai LED được điều khiển độc lập bằng PA0 đến PA11. Hai hướng đối diện
+Bắc--Nam luôn cùng trạng thái; hai hướng Đông--Tây luôn cùng trạng thái. Các LED
+mắc active-low, do đó mức logic 0 bật LED và mức logic 1 tắt LED. Chu kỳ gồm
+xanh 3 giây, vàng 2 giây và đỏ 5 giây cho mỗi hướng.
+
+\begin{figure}[!htp]
+    \centering
+    \IfFileExists{source/picture/bai_1/ex03_1_proteus.png}{
+        \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex03_1_proteus.png}
+    }{
+        \fbox{\parbox[c][4.5cm][c]{0.82\textwidth}{\centering
+        Chèn ảnh \texttt{ex03\_1\_proteus.png} tại đây}}
+    }
+    \caption{Trạng thái 1: Bắc--Nam xanh, Đông--Tây đỏ}
+    \label{fig:ex03-state-1}
+\end{figure}
+
+\begin{figure}[!htp]
+    \centering
+    \IfFileExists{source/picture/bai_1/ex03_2_proteus.png}{
+        \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex03_2_proteus.png}
+    }{
+        \fbox{\parbox[c][4.5cm][c]{0.82\textwidth}{\centering
+        Chèn ảnh \texttt{ex03\_2\_proteus.png} tại đây}}
+    }
+    \caption{Trạng thái 2: Bắc--Nam vàng, Đông--Tây đỏ}
+    \label{fig:ex03-state-2}
+\end{figure}
+
+\begin{figure}[!htp]
+    \centering
+    \IfFileExists{source/picture/bai_1/ex03_3_proteus.png}{
+        \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex03_3_proteus.png}
+    }{
+        \fbox{\parbox[c][4.5cm][c]{0.82\textwidth}{\centering
+        Chèn ảnh \texttt{ex03\_3\_proteus.png} tại đây}}
+    }
+    \caption{Trạng thái 3: Bắc--Nam đỏ, Đông--Tây xanh}
+    \label{fig:ex03-state-3}
+\end{figure}
+
+\begin{lstlisting}[caption=Hàm chọn trạng thái cho các LED active-low]
+static void TrafficLight_Set(uint16_t active_pins)
+{
+  HAL_GPIO_WritePin(GPIOA, ALL_TRAFFIC_LED_PINS, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, active_pins, GPIO_PIN_RESET);
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Chu kỳ điều khiển đèn giao thông bốn hướng]
+while (1)
+{
+  TrafficLight_Set(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
+                   EAST_RED_Pin | WEST_RED_Pin);
+  HAL_Delay(3000);
+
+  TrafficLight_Set(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
+                   EAST_RED_Pin | WEST_RED_Pin);
+  HAL_Delay(2000);
+
+  TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                   EAST_GREEN_Pin | WEST_GREEN_Pin);
+  HAL_Delay(3000);
+
+  TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                   EAST_YELLOW_Pin | WEST_YELLOW_Pin);
+  HAL_Delay(2000);
+}
+\end{lstlisting}
 
 \subsection{Exercise 4}
 Add \textbf{only one 7 led segment} to the schematic in Exercise 3. This component can be found in Proteus by the keyword \textbf{7SEG-COM-ANODE}. For this device, the common pin should be connected to the power supply and other pins are supposed to connected to PB0 to PB6. Therefore, to turn-on a segment in this 7SEG, the STM32 pin should be in logic 0 (0V).\\

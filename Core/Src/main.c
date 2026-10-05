@@ -32,6 +32,13 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+#define ALL_TRAFFIC_LED_PINS (SOUTH_RED_Pin | SOUTH_YELLOW_Pin | \
+                              SOUTH_GREEN_Pin | EAST_RED_Pin | \
+                              EAST_YELLOW_Pin | NORTH_RED_Pin | \
+                              NORTH_YELLOW_Pin | NORTH_GREEN_Pin | \
+                              EAST_GREEN_Pin | WEST_RED_Pin | \
+                              WEST_YELLOW_Pin | WEST_GREEN_Pin)
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -49,6 +56,8 @@
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
+
+static void TrafficLight_Set(uint16_t active_pins);
 
 /* USER CODE END PFP */
 
@@ -88,6 +97,9 @@ int main(void)
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
 
+  /* All LEDs are active-low, so a high output turns every LED off. */
+  HAL_GPIO_WritePin(GPIOA, ALL_TRAFFIC_LED_PINS, GPIO_PIN_SET);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -95,22 +107,27 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    /* The LED cathodes are connected to PA5, PA6 and PA7 (active-low). */
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-    HAL_Delay(5000);
 
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
+    /* USER CODE BEGIN 3 */
+    /* North/South green, East/West red. */
+    TrafficLight_Set(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
+                     EAST_RED_Pin | WEST_RED_Pin);
+    HAL_Delay(3000);
+
+    /* North/South yellow, East/West red. */
+    TrafficLight_Set(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
+                     EAST_RED_Pin | WEST_RED_Pin);
     HAL_Delay(2000);
 
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+    /* North/South red, East/West green. */
+    TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                     EAST_GREEN_Pin | WEST_GREEN_Pin);
     HAL_Delay(3000);
-    /* USER CODE BEGIN 3 */
+
+    /* North/South red, East/West yellow. */
+    TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                     EAST_YELLOW_Pin | WEST_YELLOW_Pin);
+    HAL_Delay(2000);
   }
   /* USER CODE END 3 */
 }
@@ -167,14 +184,20 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, SOUTH_RED_Pin|SOUTH_YELLOW_Pin|SOUTH_GREEN_Pin|EAST_RED_Pin
+                          |EAST_YELLOW_Pin|NORTH_RED_Pin|NORTH_YELLOW_Pin|NORTH_GREEN_Pin
+                          |EAST_GREEN_Pin|WEST_RED_Pin|WEST_YELLOW_Pin|WEST_GREEN_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED_RED_Pin LED_YELLOW_Pin LED_GREEN_Pin */
-  GPIO_InitStruct.Pin = LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin;
+  /*Configure GPIO pins : SOUTH_RED_Pin SOUTH_YELLOW_Pin SOUTH_GREEN_Pin EAST_RED_Pin
+                           EAST_YELLOW_Pin NORTH_RED_Pin NORTH_YELLOW_Pin NORTH_GREEN_Pin
+                           EAST_GREEN_Pin WEST_RED_Pin WEST_YELLOW_Pin WEST_GREEN_Pin */
+  GPIO_InitStruct.Pin = SOUTH_RED_Pin|SOUTH_YELLOW_Pin|SOUTH_GREEN_Pin|EAST_RED_Pin
+                          |EAST_YELLOW_Pin|NORTH_RED_Pin|NORTH_YELLOW_Pin|NORTH_GREEN_Pin
+                          |EAST_GREEN_Pin|WEST_RED_Pin|WEST_YELLOW_Pin|WEST_GREEN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LED_RED_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
@@ -182,6 +205,16 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+/**
+  * @brief Turn on only the selected active-low traffic LEDs.
+  * @param active_pins GPIOA pin mask of LEDs that must be on.
+  */
+static void TrafficLight_Set(uint16_t active_pins)
+{
+  HAL_GPIO_WritePin(GPIOA, ALL_TRAFFIC_LED_PINS, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, active_pins, GPIO_PIN_RESET);
+}
 
 /* USER CODE END 4 */
 
