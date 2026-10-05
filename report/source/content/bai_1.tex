@@ -376,6 +376,44 @@ Similarly, the report in this exercise includes the schematic of your circuit an
 
 \textbf{Report 2: } Present the source code in while.
 
+\subsubsection*{Bài làm Exercise 2}
+
+Ba LED được mắc active-low: LED đỏ nối PA5, LED vàng nối PA6 và LED xanh nối
+PA7. Ở mỗi trạng thái chỉ có một LED sáng. Chu kỳ hoạt động là đỏ 5 giây,
+vàng 2 giây và xanh 3 giây, sau đó lặp lại.
+
+\IfFileExists{source/picture/bai_1/ex02_proteus.png}{
+\begin{figure}[!htp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex02_proteus.png}
+    \caption{Sơ đồ mô phỏng đèn giao thông của Exercise 2 trên Proteus}
+    \label{fig:ex02-proteus}
+\end{figure}
+}{
+\textit{Ảnh mô phỏng sẽ xuất hiện tại đây sau khi lưu với tên
+\texttt{source/picture/bai\_1/ex02\_proteus.png}.}
+}
+
+\begin{lstlisting}[caption=Chu kỳ đèn giao thông đỏ 5 s -- vàng 2 s -- xanh 3 s]
+while (1)
+{
+  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
+  HAL_Delay(5000);
+
+  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
+  HAL_Delay(2000);
+
+  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+  HAL_Delay(3000);
+}
+\end{lstlisting}
+
 \subsection{Exercise 3}
 Extend to the 4-way traffic light. Arrange 12 LEDs in a nice shape to simulate the behaviors of a traffic light. A reference design can be found in the figure bellow.
 
