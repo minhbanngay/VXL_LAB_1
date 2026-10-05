@@ -57,44 +57,30 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SOUTH_RED_Pin GPIO_PIN_12
-#define SOUTH_RED_GPIO_Port GPIOA
-#define SOUTH_YELLOW_Pin GPIO_PIN_1
-#define SOUTH_YELLOW_GPIO_Port GPIOA
-#define SOUTH_GREEN_Pin GPIO_PIN_2
-#define SOUTH_GREEN_GPIO_Port GPIOA
-#define EAST_RED_Pin GPIO_PIN_3
-#define EAST_RED_GPIO_Port GPIOA
-#define EAST_YELLOW_Pin GPIO_PIN_4
-#define EAST_YELLOW_GPIO_Port GPIOA
-#define NORTH_RED_Pin GPIO_PIN_5
-#define NORTH_RED_GPIO_Port GPIOA
-#define NORTH_YELLOW_Pin GPIO_PIN_6
-#define NORTH_YELLOW_GPIO_Port GPIOA
-#define NORTH_GREEN_Pin GPIO_PIN_7
-#define NORTH_GREEN_GPIO_Port GPIOA
-#define EAST_GREEN_Pin GPIO_PIN_8
-#define EAST_GREEN_GPIO_Port GPIOA
-#define WEST_RED_Pin GPIO_PIN_9
-#define WEST_RED_GPIO_Port GPIOA
-#define WEST_YELLOW_Pin GPIO_PIN_10
-#define WEST_YELLOW_GPIO_Port GPIOA
-#define WEST_GREEN_Pin GPIO_PIN_11
-#define WEST_GREEN_GPIO_Port GPIOA
-#define SEG_A_Pin GPIO_PIN_0
-#define SEG_A_GPIO_Port GPIOB
-#define SEG_B_Pin GPIO_PIN_1
-#define SEG_B_GPIO_Port GPIOB
-#define SEG_C_Pin GPIO_PIN_2
-#define SEG_C_GPIO_Port GPIOB
-#define SEG_D_Pin GPIO_PIN_3
-#define SEG_D_GPIO_Port GPIOB
-#define SEG_E_Pin GPIO_PIN_4
-#define SEG_E_GPIO_Port GPIOB
-#define SEG_F_Pin GPIO_PIN_5
-#define SEG_F_GPIO_Port GPIOB
-#define SEG_G_Pin GPIO_PIN_6
-#define SEG_G_GPIO_Port GPIOB
+#define CLOCK_LED_0_Pin GPIO_PIN_4
+#define CLOCK_LED_0_GPIO_Port GPIOA
+#define CLOCK_LED_1_Pin GPIO_PIN_5
+#define CLOCK_LED_1_GPIO_Port GPIOA
+#define CLOCK_LED_2_Pin GPIO_PIN_6
+#define CLOCK_LED_2_GPIO_Port GPIOA
+#define CLOCK_LED_3_Pin GPIO_PIN_7
+#define CLOCK_LED_3_GPIO_Port GPIOA
+#define CLOCK_LED_4_Pin GPIO_PIN_8
+#define CLOCK_LED_4_GPIO_Port GPIOA
+#define CLOCK_LED_5_Pin GPIO_PIN_9
+#define CLOCK_LED_5_GPIO_Port GPIOA
+#define CLOCK_LED_6_Pin GPIO_PIN_10
+#define CLOCK_LED_6_GPIO_Port GPIOA
+#define CLOCK_LED_7_Pin GPIO_PIN_11
+#define CLOCK_LED_7_GPIO_Port GPIOA
+#define CLOCK_LED_8_Pin GPIO_PIN_12
+#define CLOCK_LED_8_GPIO_Port GPIOA
+#define CLOCK_LED_9_Pin GPIO_PIN_13
+#define CLOCK_LED_9_GPIO_Port GPIOA
+#define CLOCK_LED_10_Pin GPIO_PIN_14
+#define CLOCK_LED_10_GPIO_Port GPIOA
+#define CLOCK_LED_11_Pin GPIO_PIN_15
+#define CLOCK_LED_11_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
