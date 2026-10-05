@@ -77,7 +77,7 @@ void Error_Handler(void);
 #define EAST_GREEN_GPIO_Port GPIOA
 #define WEST_RED_Pin GPIO_PIN_9
 #define WEST_RED_GPIO_Port GPIOA
-#define WEST_YELLOW_Pin GPIO_PIN_10
+#define WEST_YELLOW_Pin GPIO_PIN_12
 #define WEST_YELLOW_GPIO_Port GPIOA
 #define WEST_GREEN_Pin GPIO_PIN_11
 #define WEST_GREEN_GPIO_Port GPIOA
