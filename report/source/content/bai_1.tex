@@ -333,26 +333,22 @@ Hai LED được mắc active-low: cathode của LED đỏ nối PA5, cathode c�
 PA6; anode của mỗi LED nối nguồn 3.3 V qua điện trở hạn dòng. Vì vậy mức
 \texttt{GPIO\_PIN\_RESET} bật LED và mức \texttt{GPIO\_PIN\_SET} tắt LED.
 
-\IfFileExists{source/picture/bai_1/ex01_proteus.png}{
+
 \begin{figure}[!htp]
     \centering
     \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex01_proteus.png}
-    \caption{\href{https://github.com/minhbanngay/VXL_LAB_1/tree/exercise/01/proteus}
+    \caption{
     {Trạng thái 1: LED đỏ sáng, LED vàng tắt}}
     \label{fig:ex01-proteus}
 \end{figure}
-\IfFileExists{source/picture/bai_1/ex01_2_proteus.png}{
+
 \begin{figure}[!htp]
     \centering
     \includegraphics[width=0.9\textwidth]{source/picture/bai_1/ex01_2_proteus.png}
     \caption{Trạng thái 2: LED đỏ tắt, LED vàng sáng}
     \label{fig:ex01-proteus-state-2}
 \end{figure}
-}{}
-}{
-\textit{Chưa có ảnh Proteus. Sau khi hoàn thiện mạch, lưu ảnh với tên
-\texttt{source/picture/bai\_1/ex01\_proteus.png}; ảnh sẽ tự xuất hiện ở đây.}
-}
+
 
 \begin{lstlisting}[caption=Điều khiển hai LED đổi trạng thái sau mỗi 2 giây]
 while (1)
