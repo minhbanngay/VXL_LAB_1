@@ -769,3 +769,52 @@ void clearNumberOnClock(int num)
 
 \subsection{Exercise 10}
 Integrate the whole system and use 12 LEDs to display a clock. At a given time, there are only 3 LEDs are turn on for hour, minute and second information.
+
+\subsubsection*{Bài làm Exercise 10}
+
+Đồng hồ phần mềm bắt đầu tại 03:25:40 và tăng một giây sau mỗi 1000 ms. Vị trí
+kim giờ là \texttt{hour \% 12}; kim phút và kim giây được quy đổi về 12 vị trí
+bằng phép chia cho 5. Trước mỗi lần hiển thị, toàn bộ LED được tắt rồi ba vị trí
+giờ, phút và giây được bật. Khi hai hoặc ba kim trùng vị trí, cùng một LED biểu
+diễn các kim đó nên số LED sáng thực tế có thể nhỏ hơn ba.
+
+\begin{lstlisting}[caption=Hiển thị ba kim trên 12 LED]
+static void displayClock(int hour, int minute, int second)
+{
+  clearAllClock();
+  setNumberOnClock(hour % 12);
+  setNumberOnClock(minute / 5);
+  setNumberOnClock(second / 5);
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Tăng đồng hồ phần mềm thêm một giây]
+static void incrementClock(int *hour, int *minute, int *second)
+{
+  ++(*second);
+  if (*second >= 60)
+  {
+    *second = 0;
+    ++(*minute);
+  }
+
+  if (*minute >= 60)
+  {
+    *minute = 0;
+    *hour = (*hour + 1) % 24;
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Vòng lặp chính của đồng hồ]
+int hour = 3;
+int minute = 25;
+int second = 40;
+
+while (1)
+{
+  displayClock(hour, minute, second);
+  HAL_Delay(1000);
+  incrementClock(&hour, &minute, &second);
+}
+\end{lstlisting}
