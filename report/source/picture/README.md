@@ -1,14 +1,11 @@
-# Hình ảnh báo cáo
+# Hình ảnh Lab 1
 
-Đặt hình của từng bài vào thư mục tương ứng:
+Các hình hướng dẫn gốc của Lab 1 nằm trong `bai_1/` để file mẫu có thể biên dịch ngay.
 
-- `exercise_01/`
-- `exercise_02/`
-- `exercise_03/`
-- `exercise_04/`
-- `exercise_05/`
-- `exercise_06/`
-- `exercise_07/`
-- `exercise_08/`
-- `exercise_09/`
-- `exercise_10/`
+Khi làm báo cáo, đặt ảnh kết quả theo tên dễ nhận biết, ví dụ:
+
+- `bai_1/ex01_proteus.png`
+- `bai_1/ex02_proteus.png`
+- `bai_1/ex03_proteus.png`
+
+Sau đó chèn ảnh vào `source/content/bai_1.tex` ngay dưới mục **Report** của exercise tương ứng.

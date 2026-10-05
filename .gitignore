@@ -26,6 +26,7 @@ mx.scratch/
 
 # LaTeX build outputs
 report/build/
+report/main.pdf
 *.aux
 *.bbl
 *.bcf
