@@ -732,6 +732,22 @@ void clearAllClock(void)
 \subsection{Exercise 8}
 Implement a function named \textbf{setNumberOnClock(int num)}. The input for this function is from \textbf{0 to 11} and an appropriate LED is turn on. Present the source code of this function.
 
+\subsubsection*{Bài làm Exercise 8}
+
+Giá trị 0--11 được ánh xạ trực tiếp tới PA4--PA15 thông qua mảng
+\texttt{clock\_led\_pins}. Hàm bỏ qua giá trị ngoài phạm vi để tránh truy cập
+ngoài mảng. Do LED active-low, mức \texttt{GPIO\_PIN\_RESET} bật LED.
+
+\begin{lstlisting}[caption=Hàm bật một LED tại vị trí được chỉ định]
+void setNumberOnClock(int num)
+{
+  if ((num >= 0) && (num < 12))
+  {
+    HAL_GPIO_WritePin(GPIOA, clock_led_pins[num], GPIO_PIN_RESET);
+  }
+}
+\end{lstlisting}
+
 \subsection{Exercise 9}
 Implement a function named \textbf{clearNumberOnClock(int num)}. The input for this function is from \textbf{0 to 11} and an appropriate LED is turn off. 
 

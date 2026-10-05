@@ -64,6 +64,7 @@ static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
 void clearAllClock(void);
+void setNumberOnClock(int num);
 
 /* USER CODE END PFP */
 
@@ -118,7 +119,7 @@ int main(void)
     for (int index = 0; index < 12; ++index)
     {
       clearAllClock();
-      HAL_GPIO_WritePin(GPIOA, clock_led_pins[index], GPIO_PIN_RESET);
+      setNumberOnClock(index);
       HAL_Delay(500);
     }
   }
@@ -205,6 +206,18 @@ static void MX_GPIO_Init(void)
 void clearAllClock(void)
 {
   HAL_GPIO_WritePin(GPIOA, ALL_CLOCK_LED_PINS, GPIO_PIN_SET);
+}
+
+/**
+  * @brief Turn on one active-low clock LED.
+  * @param num LED index from 0 to 11 (PA4 to PA15).
+  */
+void setNumberOnClock(int num)
+{
+  if ((num >= 0) && (num < 12))
+  {
+    HAL_GPIO_WritePin(GPIOA, clock_led_pins[num], GPIO_PIN_RESET);
+  }
 }
 
 /* USER CODE END 4 */
