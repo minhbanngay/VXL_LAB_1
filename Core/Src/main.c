@@ -63,6 +63,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
+void clearAllClock(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -102,7 +104,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* The LED cathodes are connected to PA4..PA15 (active-low). */
-  HAL_GPIO_WritePin(GPIOA, ALL_CLOCK_LED_PINS, GPIO_PIN_SET);
+  clearAllClock();
 
   /* USER CODE END 2 */
 
@@ -115,7 +117,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
     for (int index = 0; index < 12; ++index)
     {
-      HAL_GPIO_WritePin(GPIOA, ALL_CLOCK_LED_PINS, GPIO_PIN_SET);
+      clearAllClock();
       HAL_GPIO_WritePin(GPIOA, clock_led_pins[index], GPIO_PIN_RESET);
       HAL_Delay(500);
     }
@@ -196,6 +198,14 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+/**
+  * @brief Turn off all 12 active-low clock LEDs.
+  */
+void clearAllClock(void)
+{
+  HAL_GPIO_WritePin(GPIOA, ALL_CLOCK_LED_PINS, GPIO_PIN_SET);
+}
 
 /* USER CODE END 4 */
 

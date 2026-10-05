@@ -717,6 +717,18 @@ void clearAllClock(){
 }
 \end{lstlisting}
 
+\subsubsection*{Bài làm Exercise 7}
+
+Vì 12 LED được mắc active-low, ghi mức logic 1 lên toàn bộ PA4--PA15 sẽ tắt
+tất cả LED. Mặt nạ \texttt{ALL\_CLOCK\_LED\_PINS} chứa đủ 12 chân GPIO.
+
+\begin{lstlisting}[caption=Hàm tắt toàn bộ LED đồng hồ]
+void clearAllClock(void)
+{
+  HAL_GPIO_WritePin(GPIOA, ALL_CLOCK_LED_PINS, GPIO_PIN_SET);
+}
+\end{lstlisting}
+
 \subsection{Exercise 8}
 Implement a function named \textbf{setNumberOnClock(int num)}. The input for this function is from \textbf{0 to 11} and an appropriate LED is turn on. Present the source code of this function.
 
