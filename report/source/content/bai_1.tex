@@ -351,19 +351,29 @@ PA6; anode của mỗi LED nối nguồn 3.3 V qua điện trở hạn dòng. V�
 
 
 \begin{lstlisting}[caption=Điều khiển hai LED đổi trạng thái sau mỗi 2 giây]
+uint8_t led_state = 0;
+uint8_t elapsed_seconds = 0;
+
 while (1)
 {
-  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin,
-                    GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin,
-                    GPIO_PIN_SET);
-  HAL_Delay(2000);
+  if (led_state == 0)
+  {
+    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
+  }
+  else
+  {
+    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
+  }
 
-  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin,
-                    GPIO_PIN_SET);
-  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin,
-                    GPIO_PIN_RESET);
-  HAL_Delay(2000);
+  HAL_Delay(1000);
+
+  if (++elapsed_seconds >= 2)
+  {
+    elapsed_seconds = 0;
+    led_state ^= 1U;
+  }
 }
 \end{lstlisting}
 

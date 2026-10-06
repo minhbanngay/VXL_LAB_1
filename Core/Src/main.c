@@ -66,6 +66,9 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 
+  uint8_t led_state = 0;
+  uint8_t elapsed_seconds = 0;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -95,15 +98,26 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    /* The LED cathodes are connected to PA5 and PA6, so they are active-low. */
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
-    HAL_Delay(2000);
-
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
-    HAL_Delay(2000);
     /* USER CODE BEGIN 3 */
+    if (led_state == 0)
+    {
+      HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+      HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
+    }
+    else
+    {
+      HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
+    }
+
+    HAL_Delay(1000);
+
+    ++elapsed_seconds;
+    if (elapsed_seconds >= 2)
+    {
+      elapsed_seconds = 0;
+      led_state ^= 1U;
+    }
   }
   /* USER CODE END 3 */
 }
