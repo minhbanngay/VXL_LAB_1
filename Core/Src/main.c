@@ -61,7 +61,7 @@ static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
 void display7SEG(int num);
-static void TrafficLight_RunPhase(uint16_t active_pins, int duration_seconds);
+static void TrafficLight_Set(uint16_t active_pins);
 
 /* USER CODE END PFP */
 
@@ -78,6 +78,9 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+
+  uint8_t traffic_state = 0;
+  uint8_t remaining_seconds = 3;
 
   /* USER CODE END 1 */
 
@@ -114,21 +117,38 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    /* North/South green, East/West red: count down from 3. */
-    TrafficLight_RunPhase(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
-                          EAST_RED_Pin | WEST_RED_Pin, 3);
+    switch (traffic_state)
+    {
+      case 0:
+        TrafficLight_Set(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
+                         EAST_RED_Pin | WEST_RED_Pin);
+        break;
 
-    /* North/South yellow, East/West red: count down from 2. */
-    TrafficLight_RunPhase(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
-                          EAST_RED_Pin | WEST_RED_Pin, 2);
+      case 1:
+        TrafficLight_Set(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
+                         EAST_RED_Pin | WEST_RED_Pin);
+        break;
 
-    /* North/South red, East/West green: count down from 3. */
-    TrafficLight_RunPhase(NORTH_RED_Pin | SOUTH_RED_Pin |
-                          EAST_GREEN_Pin | WEST_GREEN_Pin, 3);
+      case 2:
+        TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                         EAST_GREEN_Pin | WEST_GREEN_Pin);
+        break;
 
-    /* North/South red, East/West yellow: count down from 2. */
-    TrafficLight_RunPhase(NORTH_RED_Pin | SOUTH_RED_Pin |
-                          EAST_YELLOW_Pin | WEST_YELLOW_Pin, 2);
+      default:
+        TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                         EAST_YELLOW_Pin | WEST_YELLOW_Pin);
+        break;
+    }
+
+    display7SEG(remaining_seconds);
+    HAL_Delay(1000);
+
+    --remaining_seconds;
+    if (remaining_seconds == 0)
+    {
+      traffic_state = (traffic_state + 1U) % 4U;
+      remaining_seconds = ((traffic_state % 2U) == 0U) ? 3U : 2U;
+    }
   }
   /* USER CODE END 3 */
 }
@@ -249,20 +269,13 @@ void display7SEG(int num)
 }
 
 /**
-  * @brief Set one traffic-light phase and show its remaining time.
-  * @param active_pins GPIOA mask of the active-low LEDs to turn on.
-  * @param duration_seconds Phase duration and initial countdown value.
+  * @brief Turn on only the selected active-low traffic LEDs.
+  * @param active_pins GPIOA mask of LEDs that must be on.
   */
-static void TrafficLight_RunPhase(uint16_t active_pins, int duration_seconds)
+static void TrafficLight_Set(uint16_t active_pins)
 {
   HAL_GPIO_WritePin(GPIOA, ALL_TRAFFIC_LED_PINS, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOA, active_pins, GPIO_PIN_RESET);
-
-  for (int remaining = duration_seconds; remaining > 0; --remaining)
-  {
-    display7SEG(remaining);
-    HAL_Delay(1000);
-  }
 }
 
 /* USER CODE END 4 */

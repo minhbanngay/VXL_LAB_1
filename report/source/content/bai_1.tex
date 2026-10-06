@@ -625,35 +625,48 @@ thái cho 12 LED giao thông, sau đó LED 7 đoạn hiển thị số giây cò
 kéo dài 3 giây và pha vàng kéo dài 2 giây; vì hai hướng hoạt động đối nghịch nên
 mỗi hướng có tổng thời gian đèn đỏ là 5 giây.
 
-\begin{lstlisting}[caption=Điều khiển một pha và hiển thị thời gian đếm ngược]
-static void TrafficLight_RunPhase(uint16_t active_pins,
-                                  int duration_seconds)
+\begin{lstlisting}[caption=Hàm chọn trạng thái đèn giao thông]
+static void TrafficLight_Set(uint16_t active_pins)
 {
   HAL_GPIO_WritePin(GPIOA, ALL_TRAFFIC_LED_PINS, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOA, active_pins, GPIO_PIN_RESET);
-
-  for (int remaining = duration_seconds; remaining > 0; --remaining)
-  {
-    display7SEG(remaining);
-    HAL_Delay(1000);
-  }
 }
 \end{lstlisting}
 
 \begin{lstlisting}[caption=Chu kỳ đèn giao thông bốn hướng có đếm ngược]
+uint8_t traffic_state = 0;
+uint8_t remaining_seconds = 3;
+
 while (1)
 {
-  TrafficLight_RunPhase(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
-                        EAST_RED_Pin | WEST_RED_Pin, 3);
+  switch (traffic_state)
+  {
+    case 0:
+      TrafficLight_Set(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
+                       EAST_RED_Pin | WEST_RED_Pin);
+      break;
+    case 1:
+      TrafficLight_Set(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
+                       EAST_RED_Pin | WEST_RED_Pin);
+      break;
+    case 2:
+      TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                       EAST_GREEN_Pin | WEST_GREEN_Pin);
+      break;
+    default:
+      TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                       EAST_YELLOW_Pin | WEST_YELLOW_Pin);
+      break;
+  }
 
-  TrafficLight_RunPhase(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
-                        EAST_RED_Pin | WEST_RED_Pin, 2);
+  display7SEG(remaining_seconds);
+  HAL_Delay(1000);
 
-  TrafficLight_RunPhase(NORTH_RED_Pin | SOUTH_RED_Pin |
-                        EAST_GREEN_Pin | WEST_GREEN_Pin, 3);
-
-  TrafficLight_RunPhase(NORTH_RED_Pin | SOUTH_RED_Pin |
-                        EAST_YELLOW_Pin | WEST_YELLOW_Pin, 2);
+  if (--remaining_seconds == 0)
+  {
+    traffic_state = (traffic_state + 1U) % 4U;
+    remaining_seconds = (traffic_state % 2U == 0U) ? 3U : 2U;
+  }
 }
 \end{lstlisting}
 
