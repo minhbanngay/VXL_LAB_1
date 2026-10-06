@@ -486,23 +486,39 @@ static void TrafficLight_Set(uint16_t active_pins)
 \end{lstlisting}
 
 \begin{lstlisting}[caption=Chu kỳ điều khiển đèn giao thông bốn hướng]
+uint8_t traffic_state = 0;
+uint8_t elapsed_seconds = 0;
+const uint8_t state_duration[4] = {3, 2, 3, 2};
+
 while (1)
 {
-  TrafficLight_Set(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
-                   EAST_RED_Pin | WEST_RED_Pin);
-  HAL_Delay(3000);
+  switch (traffic_state)
+  {
+    case 0:
+      TrafficLight_Set(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
+                       EAST_RED_Pin | WEST_RED_Pin);
+      break;
+    case 1:
+      TrafficLight_Set(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
+                       EAST_RED_Pin | WEST_RED_Pin);
+      break;
+    case 2:
+      TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                       EAST_GREEN_Pin | WEST_GREEN_Pin);
+      break;
+    default:
+      TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                       EAST_YELLOW_Pin | WEST_YELLOW_Pin);
+      break;
+  }
 
-  TrafficLight_Set(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
-                   EAST_RED_Pin | WEST_RED_Pin);
-  HAL_Delay(2000);
+  HAL_Delay(1000);
 
-  TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
-                   EAST_GREEN_Pin | WEST_GREEN_Pin);
-  HAL_Delay(3000);
-
-  TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
-                   EAST_YELLOW_Pin | WEST_YELLOW_Pin);
-  HAL_Delay(2000);
+  if (++elapsed_seconds >= state_duration[traffic_state])
+  {
+    elapsed_seconds = 0;
+    traffic_state = (traffic_state + 1U) % 4U;
+  }
 }
 \end{lstlisting}
 

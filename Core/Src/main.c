@@ -75,6 +75,10 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 
+  uint8_t traffic_state = 0;
+  uint8_t elapsed_seconds = 0;
+  const uint8_t state_duration[4] = {3, 2, 3, 2};
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -109,25 +113,37 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    /* North/South green, East/West red. */
-    TrafficLight_Set(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
-                     EAST_RED_Pin | WEST_RED_Pin);
-    HAL_Delay(3000);
+    switch (traffic_state)
+    {
+      case 0:
+        TrafficLight_Set(NORTH_GREEN_Pin | SOUTH_GREEN_Pin |
+                         EAST_RED_Pin | WEST_RED_Pin);
+        break;
 
-    /* North/South yellow, East/West red. */
-    TrafficLight_Set(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
-                     EAST_RED_Pin | WEST_RED_Pin);
-    HAL_Delay(2000);
+      case 1:
+        TrafficLight_Set(NORTH_YELLOW_Pin | SOUTH_YELLOW_Pin |
+                         EAST_RED_Pin | WEST_RED_Pin);
+        break;
 
-    /* North/South red, East/West green. */
-    TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
-                     EAST_GREEN_Pin | WEST_GREEN_Pin);
-    HAL_Delay(3000);
+      case 2:
+        TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                         EAST_GREEN_Pin | WEST_GREEN_Pin);
+        break;
 
-    /* North/South red, East/West yellow. */
-    TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
-                     EAST_YELLOW_Pin | WEST_YELLOW_Pin);
-    HAL_Delay(2000);
+      default:
+        TrafficLight_Set(NORTH_RED_Pin | SOUTH_RED_Pin |
+                         EAST_YELLOW_Pin | WEST_YELLOW_Pin);
+        break;
+    }
+
+    HAL_Delay(1000);
+
+    ++elapsed_seconds;
+    if (elapsed_seconds >= state_duration[traffic_state])
+    {
+      elapsed_seconds = 0;
+      traffic_state = (traffic_state + 1U) % 4U;
+    }
   }
   /* USER CODE END 3 */
 }
