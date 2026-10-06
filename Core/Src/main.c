@@ -66,6 +66,10 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 
+  uint8_t traffic_state = 0;
+  uint8_t elapsed_seconds = 0;
+  const uint8_t state_duration[3] = {5, 2, 3};
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -95,22 +99,31 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    /* The LED cathodes are connected to PA5, PA6 and PA7 (active-low). */
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-    HAL_Delay(5000);
-
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-    HAL_Delay(2000);
-
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
-    HAL_Delay(3000);
     /* USER CODE BEGIN 3 */
+    HAL_GPIO_WritePin(GPIOA, LED_RED_Pin | LED_YELLOW_Pin | LED_GREEN_Pin,
+                      GPIO_PIN_SET);
+
+    if (traffic_state == 0)
+    {
+      HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+    }
+    else if (traffic_state == 1)
+    {
+      HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
+    }
+    else
+    {
+      HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+    }
+
+    HAL_Delay(1000);
+
+    ++elapsed_seconds;
+    if (elapsed_seconds >= state_duration[traffic_state])
+    {
+      elapsed_seconds = 0;
+      traffic_state = (traffic_state + 1U) % 3U;
+    }
   }
   /* USER CODE END 3 */
 }

@@ -395,22 +395,30 @@ vàng 2 giây và xanh 3 giây, sau đó lặp lại.
 }
 
 \begin{lstlisting}[caption=Chu kỳ đèn giao thông đỏ 5 s -- vàng 2 s -- xanh 3 s]
+uint8_t traffic_state = 0;
+uint8_t elapsed_seconds = 0;
+const uint8_t state_duration[3] = {5, 2, 3};
+
 while (1)
 {
-  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-  HAL_Delay(5000);
+  HAL_GPIO_WritePin(GPIOA,
+                    LED_RED_Pin | LED_YELLOW_Pin | LED_GREEN_Pin,
+                    GPIO_PIN_SET);
 
-  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-  HAL_Delay(2000);
+  if (traffic_state == 0)
+    HAL_GPIO_WritePin(GPIOA, LED_RED_Pin, GPIO_PIN_RESET);
+  else if (traffic_state == 1)
+    HAL_GPIO_WritePin(GPIOA, LED_YELLOW_Pin, GPIO_PIN_RESET);
+  else
+    HAL_GPIO_WritePin(GPIOA, LED_GREEN_Pin, GPIO_PIN_RESET);
 
-  HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
-  HAL_Delay(3000);
+  HAL_Delay(1000);
+
+  if (++elapsed_seconds >= state_duration[traffic_state])
+  {
+    elapsed_seconds = 0;
+    traffic_state = (traffic_state + 1U) % 3U;
+  }
 }
 \end{lstlisting}
 
