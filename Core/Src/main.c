@@ -64,6 +64,10 @@ static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
 void clearAllClock(void);
+void setNumberOnClock(int num);
+void clearNumberOnClock(int num);
+static void displayClock(int hour, int minute, int second);
+static void incrementClock(int *hour, int *minute, int *second);
 
 /* USER CODE END PFP */
 
@@ -80,6 +84,10 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+
+  int hour = 3;
+  int minute = 25;
+  int second = 40;
 
   /* USER CODE END 1 */
 
@@ -115,12 +123,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    for (int index = 0; index < 12; ++index)
-    {
-      clearAllClock();
-      HAL_GPIO_WritePin(GPIOA, clock_led_pins[index], GPIO_PIN_RESET);
-      HAL_Delay(500);
-    }
+    displayClock(hour, minute, second);
+    HAL_Delay(1000);
+    incrementClock(&hour, &minute, &second);
   }
   /* USER CODE END 3 */
 }
@@ -205,6 +210,60 @@ static void MX_GPIO_Init(void)
 void clearAllClock(void)
 {
   HAL_GPIO_WritePin(GPIOA, ALL_CLOCK_LED_PINS, GPIO_PIN_SET);
+}
+
+/**
+  * @brief Turn on one active-low clock LED.
+  * @param num LED index from 0 to 11 (PA4 to PA15).
+  */
+void setNumberOnClock(int num)
+{
+  if ((num >= 0) && (num < 12))
+  {
+    HAL_GPIO_WritePin(GPIOA, clock_led_pins[num], GPIO_PIN_RESET);
+  }
+}
+
+/**
+  * @brief Turn off one active-low clock LED.
+  * @param num LED index from 0 to 11 (PA4 to PA15).
+  */
+void clearNumberOnClock(int num)
+{
+  if ((num >= 0) && (num < 12))
+  {
+    HAL_GPIO_WritePin(GPIOA, clock_led_pins[num], GPIO_PIN_SET);
+  }
+}
+
+/**
+  * @brief Show hour, minute and second positions on the 12-LED clock.
+  */
+static void displayClock(int hour, int minute, int second)
+{
+  clearAllClock();
+  setNumberOnClock(hour % 12);
+  setNumberOnClock(minute / 5);
+  setNumberOnClock(second / 5);
+}
+
+/**
+  * @brief Advance the software clock by one second.
+  */
+static void incrementClock(int *hour, int *minute, int *second)
+{
+  ++(*second);
+  if (*second >= 60)
+  {
+    *second = 0;
+    ++(*minute);
+  }
+
+  if (*minute >= 60)
+  {
+    *minute = 0;
+    *hour = (*hour + 1) % 24;
+  }
 }
 
 /* USER CODE END 4 */
